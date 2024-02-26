@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Get All Students
+        $("#getAllStudents").click(function () {
+          $.ajax({
+            url: "http://localhost:5103/api/Student",
+            success: function (result) {
+              var studentsHtml = "";
+              for (let student of result) {
+                studentsHtml +=
+                  "Student ID: " +
+                  student.id +
+                  "<br/>" +
+                  "Student Name: " +
+                  student.name +
+                  "<br/>" +
+                  "Student Age: " +
+                  student.age +
+                  "<br/>" +
+                  "Student Address: " +
+                  student.address +
+                  "<br/>" +
+                  "Student DeptId: " +
+                  student.deptId +
+                  "<br/><br/>";
+              }
+              $("#result1").html(studentsHtml);
+            },
+            error: function () {
+              $("#result1").html("Failed to fetch students.");
+            },
+          });
+        });
+
+        // Get Student by ID
+        $("#getStudentById").click(function () {
+          var studentId = $("#studentId").val();
+          $.ajax({
+            url: "http://localhost:5103/api/Student/" + studentId,
+            success: function (result) {
+              $("#result2").html(
+                "Student ID: " +
+                  result.student_Id +
+                  "<br/>" +
+                  "Student Name: " +
+                  result.student_Name +
+                  "<br/>" +
+                  "Student Age: " +
+                  result.student_Age +
+                  "<br/>" +
+                  "Student Address: " +
+                  result.student_Address +
+                  "<br/>" +
+                  "Student DeptId: " +
+                  result.student_Department
+              );
+            },
+            error: function () {
+              $("#result2").html("Student not found.");
+            },
+          });
+        });
+
+        // Get Student by Name
+        $("#getStudentByName").click(function () {
+          var studentName = $("#studentName").val();
+          $.ajax({
+            url: "http://localhost:5103/api/Student/" + studentName,
+            success: function (result) {
+              $("#result3").html(
+                "Student ID: " +
+                  result.student_Id +
+                  "<br/>" +
+                  "Student Name: " +
+                  result.student_Name +
+                  "<br/>" +
+                  "Student Age: " +
+                  result.student_Age +
+                  "<br/>" +
+                  "Student Address: " +
+                  result.student_Address +
+                  "<br/>" +
+                  "Student DeptId: " +
+                  result.student_Department
+              );
+            },
+            error: function () {
+              $("#result3").html("Student not found.");
+            },
+          });
+        });
+
+        // Add Student
+        $("#addStudent").click(function () {
+          var studentName = $("#addStudentName").val();
+          var studentAge = $("#addStudentAge").val();
+          var studentAddress = $("#addStudentAddress").val();
+          var studentDeptId = $("#addStudentDeptId").val();
+          var studentImage = $("#addStudentImage").val();
+          $.ajax({
+            url: "http://localhost:5103/api/Student",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+              Name: studentName,
+              Age: studentAge,
+              Address: studentAddress,
+              Image: studentImage,
+              DeptId: studentDeptId,
+            }),
+            success: function (result) {
+              $("#result4").html("Student added successfully.");
+            },
+            error: function () {
+              $("#result4").html("Failed to add student.");
+            },
+          });
+        });
+
+        // Edit Student
+        $("#editStudent").click(function () {
+          var studentId = $("#editStudentId").val();
+          var studentName = $("#editStudentName").val();
+          var studentAge = $("#editStudentAge").val();
+          var studentAddress = $("#editStudentAddress").val();
+          var studentDeptId = $("#editStudentDeptId").val();
+          var studentImage = $("#editStudentImage").val();
+          $.ajax({
+            url: "http://localhost:5103/api/Student/",
+            method: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify({
+              Id: studentId,
+              Name: studentName,
+              Age: studentAge,
+              Address: studentAddress,
+              Image: studentImage,
+              DeptId: studentDeptId,
+            }),
+            success: function (result) {
+              $("#result5").html("Student updated successfully.");
+            },
+            error: function () {
+              $("#result5").html("Failed to update student.");
+            },
+          });
+        });
+
+        // Delete Student
+        $("#deleteStudent").click(function () {
+          var studentId = $("#deleteStudentId").val();
+          $.ajax({
+            url: "http://localhost:5103/api/Student/" + studentId,
+            method: "DELETE",
+            success: function (result) {
+              $("#result6").html("Student deleted successfully.");
+            },
+            error: function () {
+              $("#result6").html("Failed to delete student.");
+            },
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h2>Get All Students</h2>
+    <button id="getAllStudents">Get All Students</button><br /><br />
+    <div id="result1"></div>
+    <h2>Get Student by ID</h2>
+    <input type="text" id="studentId" placeholder="Enter Student ID" />
+    <button id="getStudentById">Get Student by ID</button><br /><br />
+    <div id="result2"></div>
+    <h2>Get Student by Name</h2>
+    <input type="text" id="studentName" placeholder="Enter Student Name" />
+    <button id="getStudentByName">Get Student by Name</button><br /><br />
+    <div id="result3"></div>
+    <h2>Add Student</h2>
+    <input type="text" id="addStudentName" placeholder="Enter Student Name" />
+    <input type="text" id="addStudentAge" placeholder="Enter Student Age" />
+    <input
+      type="text"
+      id="addStudentAddress"
+      placeholder="Enter Student Address"
+    />
+    <input type="text" id="addStudentImage" placeholder="Enter Student Image" />
+    <input
+      type="text"
+      id="addStudentDeptId"
+      placeholder="Enter Student DeptId"
+    />
+    <button id="addStudent">Add Student</button><br /><br />
+    <div id="result4"></div>
+
+    <h2>Edit Student</h2>
+    <input type="text" id="editStudentId" placeholder="Enter Student ID" />
+    <input
+      type="text"
+      id="editStudentName"
+      placeholder="Enter New Student Name"
+    />
+    <input
+      type="text"
+      id="editStudentAge"
+      placeholder="Enter New Student Age"
+    />
+    <input
+      type="text"
+      id="editStudentAddress"
+      placeholder="Enter New Student Address"
+    />
+    <input
+      type="text"
+      id="editStudentDeptId"
+      placeholder="Enter New Student DeptId"
+    />
+    <input
+      type="text"
+      id="editStudentImage"
+      placeholder="Enter New Student Image"
+    />
+    <button id="editStudent">Edit Student</button><br /><br />
+    <div id="result5"></div>
+    <h2>Delete Student</h2>
+    <input
+      type="text"
+      id="deleteStudentId"
+      placeholder="Enter Student ID to Delete"
+    />
+    <button id="deleteStudent">Delete Student</button><br /><br />
+    <div id="result6"></div>
+  </body>
+</html>

@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Get All Department
+        $("#getAllDepartments").click(function () {
+          $.ajax({
+            url: "http://localhost:5103/api/Department",
+            success: function (result) {
+              var departmentsHtml = "";
+              for (let dept of result) {
+                departmentsHtml +=
+                  "Department ID: " +
+                  dept.id +
+                  "<br/>" +
+                  "Department Name: " +
+                  dept.name +
+                  "<br/>" +
+                  "Department Location: " +
+                  dept.location +
+                  "<br/>" +
+                  "Department MgrName: " +
+                  dept.mgrName +
+                  "<br/><br/>";
+              }
+              document.getElementById("departmentsList").innerHTML =
+                departmentsHtml;
+            },
+            error: function () {
+              document.getElementById("departmentsList").innerHTML =
+                "Failed to fetch departments.";
+            },
+          });
+        });
+        // Get Department By Id
+        $("#getDepartmentById").click(function () {
+          var departmentId = $("#departmentId").val(); // Get the department ID from the input field
+          $.ajax({
+            url: "http://localhost:5103/api/Department/" + departmentId,
+            success: function (result) {
+              document.getElementById("departmentDetails").innerHTML =
+                "Department ID: " +
+                result.department_Number +
+                "<br/>" +
+                "Department Name: " +
+                result.department_Name +
+                "<br/>" +
+                "Department MgrName: " +
+                result.department_Manager +
+                "<br/>";
+            },
+            error: function () {
+              document.getElementById("departmentDetails").innerHTML =
+                "Department not found.";
+            },
+          });
+        });
+        // Get Department By Name
+        $("#getDepartmentByName").click(function () {
+          var departmentName = $("#departmentName").val(); // Get the department name from the input field
+          $.ajax({
+            url: "http://localhost:5103/api/Department/" + departmentName,
+            success: function (result) {
+              document.getElementById("departmentDetails2").innerHTML =
+                "Department ID: " +
+                result.department_Number +
+                "<br/>" +
+                "Department Name: " +
+                result.department_Name +
+                "<br/>" +
+                "Department MgrName: " +
+                result.department_Manager +
+                "<br/>";
+            },
+            error: function () {
+              document.getElementById("div1").innerHTML =
+                "Department not found.";
+            },
+          });
+        });
+        // Add Department
+        $("#addDepartmentForm").submit(function (event) {
+          event.preventDefault();
+          var departmentName = $("#newDepartmentName").val();
+          var location = $("#newLocation").val();
+          var managerName = $("#newManagerName").val();
+          if (departmentName && location && managerName) {
+            var newDepartment = {
+              name: departmentName,
+              location: location,
+              mgrName: managerName,
+            };
+            $.ajax({
+              type: "POST",
+              url: "http://localhost:5103/api/Department",
+              data: JSON.stringify(newDepartment),
+              contentType: "application/json",
+              success: function (result) {
+                document.getElementById("result").innerHTML =
+                  "Department added successfully.";
+              },
+              error: function () {
+                document.getElementById("result").innerHTML =
+                  "Failed to add department.";
+              },
+            });
+          }
+        });
+        // Update Department
+        $("#btnEditDepartment").click(function () {
+          var departmentId = $("#editDepartmentId").val();
+          var departmentName = $("#editDepartmentName").val();
+          var location = $("#editLocation").val();
+          var managerName = $("#editManagerName").val();
+          if (
+            departmentId !== "" &&
+            departmentName !== "" &&
+            location !== "" &&
+            managerName !== ""
+          ) {
+            $.ajax({
+              url: "http://localhost:5103/api/Department/",
+              method: "PUT",
+              contentType: "application/json",
+              data: JSON.stringify({
+                Id: departmentId,
+                Name: departmentName,
+                Location: location,
+                MgrName: managerName,
+              }),
+              success: function () {
+                document.getElementById("result1").innerHTML =
+                  "Department updated successfully.";
+              },
+              error: function () {
+                document.getElementById("result1").innerHTML =
+                  "Failed to update department.";
+              },
+            });
+          }
+        });
+        // Delete Department
+        $("#deleteDepartment").click(function () {
+          var departmentId = $("#deleteDepartmentId").val();
+          $.ajax({
+            url: "http://localhost:5103/api/Department/" + departmentId,
+            method: "DELETE",
+            success: function (result) {
+              $("#result2").html("Department deleted successfully.");
+            },
+            error: function () {
+              $("#result2").html("Failed to delete department.");
+            },
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h2>Get All Department</h2>
+    <button id="getAllDepartments">Get All Departments</button> <br />
+    <br />
+    <div id="departmentsList"></div>
+    <br />
+    <br />
+    <h2>Get Department By Id</h2>
+    <input type="text" id="departmentId" placeholder="Department Id" />
+    <button id="getDepartmentById">Get Department by ID</button> <br />
+    <br />
+    <div id="departmentDetails"></div>
+    <br />
+    <br />
+    <h2>Get Department By Name</h2>
+    <input type="text" id="departmentName" placeholder="Department Name" />
+    <button id="getDepartmentByName">Get Department by Name</button> <br />
+    <br />
+    <div id="departmentDetails2"></div>
+    <br />
+    <br />
+    <h2>Add Department</h2>
+    <form id="addDepartmentForm">
+      <input
+        type="text"
+        id="newDepartmentName"
+        name="newDepartmentName"
+        placeholder="Department Name"
+      />
+      <input
+        type="text"
+        id="newLocation"
+        name="newLocation"
+        placeholder="Location"
+      />
+      <input
+        type="text"
+        id="newManagerName"
+        name="newManagerName"
+        placeholder="Manager Name"
+      />
+      <button type="submit">Add Department</button>
+    </form>
+    <br />
+    <div id="result"></div>
+    <br />
+    <br />
+    <h2>Update Department</h2>
+    <input type="text" id="editDepartmentId" placeholder="Department Id" />
+    <input type="text" id="editDepartmentName" placeholder="Department Name" />
+    <input type="text" id="editLocation" placeholder="Location" />
+    <input type="text" id="editManagerName" placeholder="Manager Name" />
+    <button id="btnEditDepartment">Edit Department</button>
+    <br />
+    <br />
+    <div id="result1"></div>
+    <br />
+    <br />
+    <h2>Delete Department</h2>
+    <input
+      type="text"
+      id="deleteDepartmentId"
+      placeholder="Enter Department ID to Delete"
+    />
+    <button id="deleteDepartment">Delete Department</button>
+    <br />
+    <br />
+    <div id="result2"></div>
+  </body>
+</html>
